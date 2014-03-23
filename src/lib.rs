@@ -5,15 +5,22 @@
 
 extern crate leveldb;
 
+#[deriving(Show)]
+pub enum Errors {
+  PreConditionNotMet(~str),
+  PostConditionNotMet(~str),
+  ActionFailed(~str)
+}
+
 pub trait State {
 }
 
 pub trait Event<T: State> {
-  fn precondition(&self, state: &T) -> Result<(), ~str>;
+  fn precondition(&self, state: &T) -> Result<(), Errors>;
 
-  fn postcondition(&self, state: &T) -> Result<(), ~str>;
+  fn postcondition(&self, state: &T) -> Result<(), Errors>;
 
-  fn action(&self, state: &mut T) -> Result<(), ~str>;
+  fn action(&self, state: &mut T) -> Result<(), Errors>;
 }
 
 pub struct Strain<T> {
@@ -25,10 +32,12 @@ impl<T: State> Strain<T> {
     Strain { state: state }
   }
 
-  pub fn feed(&mut self, event: &Event<T>) {
-    event.precondition(self.state);
-    event.action(self.state);
-    event.postcondition(self.state);
+  pub fn feed(&mut self, event: &Event<T>) -> Result<(), Errors>{
+    event.precondition(self.state).and_then(|_| {
+      event.action(self.state).and_then(|_| {
+        event.postcondition(self.state)
+      })
+    })
   }
 
   pub fn state(self) -> ~T {
@@ -38,7 +47,7 @@ impl<T: State> Strain<T> {
 
 #[cfg(test)]
 mod tests {
-  use super::{State, Event, Strain};
+  use super::{State, Event, Strain, Errors, PreConditionNotMet, PostConditionNotMet};
 
   struct Counter {
     count: int,
@@ -49,22 +58,22 @@ mod tests {
   struct Decrement;
 
   impl Event<Counter> for Increment {
-    fn precondition(&self, state: &Counter) -> Result<(), ~str> {
+    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
       if state.count < 0 {
-        Err(~"I cannot count to negatives")
+        Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &mut Counter) -> Result<(), ~str>  {
+    fn action(&self, state: &mut Counter) -> Result<(), Errors>  {
       state.count = state.count + 1;
       Ok(())
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), ~str> {
+    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
       if state.count < 0 {
-        Err(~"I shouldn't have counted to negatives")
+        Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
       }
@@ -72,22 +81,22 @@ mod tests {
   }
 
   impl Event<Counter> for Decrement {
-    fn precondition(&self, state: &Counter) -> Result<(), ~str> {
-      if state.count > 0 {
-        Err(~"I cannot count to negatives")
+    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
+      if state.count < 1 {
+        Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &mut Counter) -> Result<(), ~str>  {
+    fn action(&self, state: &mut Counter) -> Result<(), Errors>  {
       state.count = state.count - 1;
       Ok(())
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), ~str> {
+    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
       if state.count < 0 {
-        Err(~"I shouldn't have counted to negatives")
+        Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
       }
@@ -98,9 +107,12 @@ mod tests {
   #[test]
   fn test_state_changes() {
     let mut strain : Strain<Counter> = Strain { state: ~Counter { count: 0 } };
-    strain.feed(&Increment);
-    strain.feed(&Increment);
-    strain.feed(&Decrement);
+    let res = strain.feed(&Increment).and_then(|_| {
+      strain.feed(&Increment).and_then(|_| {
+        strain.feed(&Decrement)
+      })
+    });
+    assert!(res.is_ok());
     assert_eq!(strain.state().count, 1);
   }
 }
