@@ -115,4 +115,12 @@ mod tests {
     assert!(res.is_ok());
     assert_eq!(strain.state().count, 1);
   }
+
+  #[test]
+  fn test_unmet_pre_condition() {
+    let mut strain : Strain<Counter> = Strain { state: ~Counter { count: -1 } };
+    let res = strain.feed(&Increment);
+    assert!(res.is_err());
+    assert_eq!(strain.state().count, -1);
+  }
 }
