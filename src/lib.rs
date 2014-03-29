@@ -5,49 +5,21 @@
 
 extern crate leveldb;
 
-#[deriving(Show)]
-pub enum Errors {
-  PreConditionNotMet(~str),
-  PostConditionNotMet(~str),
-  ActionFailed(~str)
-}
+use state::State;
 
-pub trait State {
-}
-
-pub trait Event<T: State> {
-  fn precondition(&self, state: &T) -> Result<(), Errors>;
-
-  fn postcondition(&self, state: &T) -> Result<(), Errors>;
-
-  fn action(&self, state: &mut T) -> Result<(), Errors>;
-}
-
-pub struct Strain<T> {
-  state: ~T,
-}
-
-impl<T: State> Strain<T> {
-  pub fn new<T: State>(state: ~T) -> Strain<T> {
-    Strain { state: state }
-  }
-
-  pub fn feed(&mut self, event: &Event<T>) -> Result<(), Errors>{
-    event.precondition(self.state).and_then(|_| {
-      event.action(self.state).and_then(|_| {
-        event.postcondition(self.state)
-      })
-    })
-  }
-
-  pub fn state(self) -> ~T {
-    self.state
-  }
-}
+pub mod state;
+pub mod mutable;
+//pub mod immutable;
+pub mod errors;
+pub mod strain;
 
 #[cfg(test)]
 mod tests {
-  use super::{State, Event, Strain, Errors, PreConditionNotMet, PostConditionNotMet};
+  use super::state::State;
+  use super::mutable::Event;
+  use super::mutable::MutableStrain;
+  use super::strain::Strain;
+  use super::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   struct Counter {
     count: int,
