@@ -12,15 +12,15 @@ pub trait Event<T: State> {
 }
 
 pub trait Strain<T: State> {
-  fn evolve(self, event: &Event<T>) -> Result<strain::Strain<T>, Errors>;
+  fn evolve(self, event: &Event<T>) -> Result<~strain::Strain<T>, Errors>;
 }
 
-impl<T: State> Strain<T> for strain::Strain<T> {
-  fn evolve(self, event: &Event<T>) -> Result<strain::Strain<T>, Errors>{
-    event.precondition(self.state).and_then(|_| {
-      event.action(self.state).and_then(|state| {
-        match event.postcondition(self.state) {
-          Ok(_) => { Ok(strain::Strain { state: ~state }) },
+impl<T: State, A: strain::Strain<T>> Strain<T> for A {
+  fn evolve(self, event: &Event<T>) -> Result<~A, Errors>{
+    event.precondition(self.state()).and_then(|_| {
+      event.action(self.state()).and_then(|state| {
+        match event.postcondition(self.state()) {
+          Ok(_) => { Ok( strain::Strain::new<A>(~state)) },
           Err(errval) => { Err(errval) }
         }
       })

@@ -1,37 +1,56 @@
 #[cfg(test)]
 mod tests {
-  use strain::state::State;
   use strain::mutable::Event;
   use strain::mutable::Strain;
   use strain::branchable::Branchable;
+  use strain::state::{State,Mutable};
   use strain::strain;
+  use strain::strain::*;
+  use strain::mutable::*;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   #[deriving(Clone)]
-  struct Counter {
-    count: int,
+  struct Value {
+    x: int
   }
-  impl State for Counter {}
+  impl State for Value {}
+
+  #[deriving(Clone)]
+  struct Counter {
+    count: Value
+  }
+
+  impl strain::Strain<Value> for Counter {
+    fn new(state: Value) -> ~strain::Strain<Value> {
+      ~Counter { count: state } as ~strain::Strain<Value>
+    }
+  }
+
+  impl Mutable<Value> for Counter {
+    fn state<'a>(&'a mut self) -> &'a mut Value {
+      &'a mut self.count
+    }
+  }
 
   struct Increment;
   struct Decrement;
 
-  impl Event<Counter> for Increment {
-    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+  impl Event<Value> for Increment {
+    fn precondition(&self, count: &Value) -> Result<(), Errors> {
+      if count.x < 0 {
         Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &mut Counter) -> Result<(), Errors>  {
-      state.count = state.count + 1;
+    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
+      count.x = count.x + 1;
       Ok(())
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+    fn postcondition(&self, count: &Value) -> Result<(), Errors> {
+      if count.x < 0 {
         Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
@@ -39,22 +58,22 @@ mod tests {
     }
   }
 
-  impl Event<Counter> for Decrement {
-    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 1 {
+  impl Event<Value> for Decrement {
+    fn precondition(&self, count: &Value) -> Result<(), Errors> {
+      if count.x < 1 {
         Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &mut Counter) -> Result<(), Errors>  {
-      state.count = state.count - 1;
+    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
+      count.x = count.x - 1;
       Ok(())
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+    fn postcondition(&self, count: &Value) -> Result<(), Errors> {
+      if count.x < 0 {
         Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
@@ -65,27 +84,28 @@ mod tests {
 
   #[test]
   fn test_state_changes() {
-    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let mut strain: Counter = Counter { count: Value { x: 0 } };
     let res = strain.evolve(&Increment).and_then(|_| {
       strain.evolve(&Increment).and_then(|_| {
         strain.evolve(&Decrement)
       })
     });
+
     assert!(res.is_ok());
-    assert_eq!(strain.state().count, 1);
+    assert_eq!(strain.count.x, 1);
   }
 
   #[test]
   fn test_unmet_pre_condition() {
-    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: -1 } };
+    let mut strain: Counter = Counter { count: Value { x: -1 } };
     let res = strain.evolve(&Increment);
     assert!(res.is_err());
-    assert_eq!(strain.state().count, -1);
+    assert_eq!(strain.count.x, -1);
   }
 
   #[test]
   fn test_branch() {
-    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let mut strain: Counter = Counter { count: Value { x: 0 } };
     let res = strain.evolve(&Increment);
     assert!(res.is_ok());
     let mut branch = strain.branch();
@@ -93,7 +113,7 @@ mod tests {
     let res2 = branch.evolve(&Decrement);
     assert!(res1.is_ok());
     assert!(res2.is_ok());
-    assert_eq!(strain.state().count, 2);
-    assert_eq!(branch.state().count, 0);
+    assert_eq!(strain.count.x, 2);
+    assert_eq!(branch.count.x, 0);
   }
 }
