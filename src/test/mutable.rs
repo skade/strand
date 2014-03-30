@@ -21,8 +21,8 @@ mod tests {
   }
 
   impl strain::Strain<Value> for Counter {
-    fn new(state: Value) -> ~strain::Strain<Value> {
-      ~Counter { count: state } as ~strain::Strain<Value>
+    fn new(state: Value) -> ~Counter {
+      ~Counter { count: state }
     }
   }
 

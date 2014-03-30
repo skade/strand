@@ -1,7 +1,7 @@
 use state::State;
 
 pub trait Strain<T: State> {
-  fn new(state: T) -> ~Strain<T>;
+  fn new(state: T) -> ~Self;
 }
 
 //impl Strain<~int> for ~int {

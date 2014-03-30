@@ -1,5 +1,5 @@
 use errors::Errors;
-use state::State;
+use state::{State,Immutable};
 use strain;
 use branchable::Branchable;
 
@@ -11,16 +11,19 @@ pub trait Event<T: State> {
   fn action(&self, state: &T) -> Result<T, Errors>;
 }
 
-pub trait Strain<T: State> {
-  fn evolve(self, event: &Event<T>) -> Result<~strain::Strain<T>, Errors>;
+pub trait Strain<T: State, A: strain::Strain<T> + Immutable<T>> {
+  fn evolve(self, event: &Event<T>) -> Result<~A, Errors>;
 }
 
-impl<T: State, A: strain::Strain<T>> Strain<T> for A {
+impl<T: State, A: strain::Strain<T> + Immutable<T>> Strain<T, A> for A {
   fn evolve(self, event: &Event<T>) -> Result<~A, Errors>{
     event.precondition(self.state()).and_then(|_| {
       event.action(self.state()).and_then(|state| {
         match event.postcondition(self.state()) {
-          Ok(_) => { Ok( strain::Strain::new<A>(~state)) },
+          Ok(_) => {
+            let new_strain: ~A = strain::Strain::new(state);
+            Ok( new_strain )
+          },
           Err(errval) => { Err(errval) }
         }
       })

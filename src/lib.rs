@@ -7,7 +7,7 @@ extern crate leveldb;
 
 pub mod state;
 pub mod mutable;
-//pub mod immutable;
+pub mod immutable;
 pub mod errors;
 pub mod strain;
 pub mod branchable;
