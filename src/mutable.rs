@@ -12,7 +12,7 @@ pub trait Event<T: State> {
 
 pub trait Strain<T: State> {
   fn evolve(&mut self, event: &Event<T>) -> Result<(), Errors>;
-  fn branch(&self) -> ~Self;
+  fn branch(&self) -> Self;
 }
 
 impl<T: State + Clone> Strain<T> for strain::Strain<T> {
@@ -24,7 +24,7 @@ impl<T: State + Clone> Strain<T> for strain::Strain<T> {
     })
   }
 
-  fn branch(&self) -> ~strain::Strain<T> {
-    ~self.clone()
+  fn branch(&self) -> strain::Strain<T> {
+    self.clone()
   }
 }

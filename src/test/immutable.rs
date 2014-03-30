@@ -79,4 +79,19 @@ mod tests {
     assert!(res.is_err());
     assert_eq!(strain.state().count, -1);
   }
+
+  #[test]
+  fn test_branch() {
+    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let res = strain.evolve(&Increment);
+    assert!(res.is_ok());
+    let branch_point = res.unwrap();
+    let branch = branch_point.branch();
+    let end_state_1 = branch_point.evolve(&Increment);
+    let end_state_2 = branch.evolve(&Decrement);
+    assert!(end_state_1.is_ok());
+    assert!(end_state_2.is_ok());
+    assert_eq!(end_state_1.unwrap().state().count, 2);
+    assert_eq!(end_state_2.unwrap().state().count, 0);
+  }
 }
