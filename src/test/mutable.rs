@@ -6,6 +6,7 @@ mod tests {
   use strain::strain;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
+  #[deriving(Clone)]
   struct Counter {
     count: int,
   }
@@ -79,5 +80,19 @@ mod tests {
     let res = strain.evolve(&Increment);
     assert!(res.is_err());
     assert_eq!(strain.state().count, -1);
+  }
+
+  #[test]
+  fn test_branch() {
+    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let res = strain.evolve(&Increment);
+    assert!(res.is_ok());
+    let mut branch = strain.branch();
+    let res1 = strain.evolve(&Increment);
+    let res2 = branch.evolve(&Decrement);
+    assert!(res1.is_ok());
+    assert!(res2.is_ok());
+    assert_eq!(strain.state().count, 2);
+    assert_eq!(branch.state().count, 0);
   }
 }
