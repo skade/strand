@@ -11,10 +11,10 @@ strain: leveldb/build/leveldb*.rlib
 
 test: strain
 	mkdir -p build/
-	$(RUSTC) $(RUSTFLAGS) --test src/test/mod.rs
+	$(RUSTC) $(RUSTFLAGS) --test src/test/test.rs
 	rm -rf testdbs
 	mkdir testdbs
-	LD_LIBRARY_PATH=leveldb build/strain
+	LD_LIBRARY_PATH=leveldb build/test
 
 leveldb/build/leveldb*.rlib:
 	cd leveldb; make

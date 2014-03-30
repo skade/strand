@@ -64,9 +64,9 @@ mod tests {
   #[test]
   fn test_state_changes() {
     let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
-    let res = strain.feed(&Increment).and_then(|_| {
-      strain.feed(&Increment).and_then(|_| {
-        strain.feed(&Decrement)
+    let res = strain.evolve(&Increment).and_then(|_| {
+      strain.evolve(&Increment).and_then(|_| {
+        strain.evolve(&Decrement)
       })
     });
     assert!(res.is_ok());
@@ -76,7 +76,7 @@ mod tests {
   #[test]
   fn test_unmet_pre_condition() {
     let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: -1 } };
-    let res = strain.feed(&Increment);
+    let res = strain.evolve(&Increment);
     assert!(res.is_err());
     assert_eq!(strain.state().count, -1);
   }
