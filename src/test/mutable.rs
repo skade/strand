@@ -3,6 +3,7 @@ mod tests {
   use strain::state::State;
   use strain::mutable::Event;
   use strain::mutable::Strain;
+  use strain::branchable::Branchable;
   use strain::strain;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
