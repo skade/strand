@@ -11,7 +11,7 @@ strain: leveldb/build/leveldb*.rlib
 
 test: strain
 	mkdir -p build/
-	$(RUSTC) $(RUSTFLAGS) --test src/lib.rs
+	$(RUSTC) $(RUSTFLAGS) --test src/test/mod.rs
 	rm -rf testdbs
 	mkdir testdbs
 	LD_LIBRARY_PATH=leveldb build/strain
