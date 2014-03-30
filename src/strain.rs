@@ -1,5 +1,6 @@
 use state::State;
 
+#[deriving(Clone)]
 pub struct Strain<T> {
   state: ~T,
 }

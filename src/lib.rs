@@ -105,6 +105,7 @@ mod immutable_tests {
   use super::strain;
   use super::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
+  #[deriving(Clone)]
   struct Counter {
     count: int,
   }
@@ -160,7 +161,7 @@ mod immutable_tests {
 
   #[test]
   fn test_state_changes() {
-    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
     let res = strain.feed(&Increment).and_then(|state| {
       state.feed(&Increment).and_then(|state2| {
         state2.feed(&Decrement)
@@ -172,8 +173,9 @@ mod immutable_tests {
 
   #[test]
   fn test_unmet_pre_condition() {
-    let mut strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: -1 } };
-    let res = strain.feed(&Increment);
+    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: -1 } };
+    let res = strain.clone().feed(&Increment);
     assert!(res.is_err());
+    assert_eq!(strain.state().count, -1);
   }
 }
