@@ -1,38 +1,35 @@
 use state::State;
 
 pub trait Strain<T: State> {
-  fn new(state: T) -> ~Self;
+  fn new(state: T) -> Self;
+}
+pub trait Mutable<T: State> {
+  fn state<'a>(&'a mut self) -> &'a mut T;
+}
+pub trait Immutable<T: State> {
+  fn state(&self) -> T;
 }
 
-//impl Strain<~int> for ~int {
-//  fn new(state: ~int) -> ~Strain<~int> {
-//    ~state as ~Strain<~int>
-//  }
-//  fn state(&self) -> &~int {
-//    &self.clone()
-//  }
-//}
-//
-//impl Strain<int> for int {
-//  fn new(state: int) -> ~Strain<int> {
-//    ~state as ~Strain<int>
-//  }
-//  fn state(&self) -> &int {
-//    self
-//  }
-//}
+impl Strain<~int> for ~int {
+  fn new(state: ~int) -> ~int {
+    state
+  }
+}
 
-//#[deriving(Clone)]
-//pub struct Strain<T> {
-//  state: ~T,
-//}
-//
-//impl<T: State + Clone> Strain<T> {
-//  pub fn new<T: State>(state: ~T) -> Strain<T> {
-//    Strain { state: state }
-//  }
-//
-//  pub fn state(self) -> ~T {
-//    self.state
+impl Strain<int> for int {
+  fn new(state: int) -> int {
+    state
+  }
+}
+
+impl Immutable<int> for int {
+  fn state(&self) -> int {
+    self.clone()
+  }
+}
+
+//impl<T: Clone> Immutable<T> for T {
+//  fn state(&self) -> ~T {
+//    ~self.clone()
 //  }
 //}

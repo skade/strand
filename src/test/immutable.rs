@@ -4,7 +4,6 @@ mod tests {
   use strain::immutable::Event;
   use strain::immutable::Strain;
   use strain::branchable::Branchable;
-  use strain::strain;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   #[deriving(Clone)]
@@ -16,21 +15,21 @@ mod tests {
   struct Increment;
   struct Decrement;
 
-  impl Event<Counter> for Increment {
-    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+  impl Event<int> for Increment {
+    fn precondition(&self, state: int) -> Result<(), Errors> {
+      if state < 0 {
         Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &Counter) -> Result<Counter, Errors>  {
-      Ok(Counter { count: state.count + 1})
+    fn action(&self, state: int) -> Result<int, Errors>  {
+      Ok(state + 1)
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+    fn postcondition(&self, state: int) -> Result<(), Errors> {
+      if state < 0 {
         Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
@@ -38,21 +37,21 @@ mod tests {
     }
   }
 
-  impl Event<Counter> for Decrement {
-    fn precondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 1 {
+  impl Event<int> for Decrement {
+    fn precondition(&self, state: int) -> Result<(), Errors> {
+      if state < 1 {
         Err(PreConditionNotMet(~"I cannot count to negatives"))
       } else {
         Ok(())
       }
     }
 
-    fn action(&self, state: &Counter) -> Result<Counter, Errors>  {
-      Ok(Counter { count: state.count - 1})
+    fn action(&self, state: int) -> Result<int, Errors>  {
+      Ok(state - 1)
     }
 
-    fn postcondition(&self, state: &Counter) -> Result<(), Errors> {
-      if state.count < 0 {
+    fn postcondition(&self, state: int) -> Result<(), Errors> {
+      if state < 0 {
         Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
       } else {
         Ok(())
@@ -63,27 +62,27 @@ mod tests {
 
   #[test]
   fn test_state_changes() {
-    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let strain = 0;
     let res = strain.evolve(&Increment).and_then(|state| {
       state.evolve(&Increment).and_then(|state2| {
         state2.evolve(&Decrement)
       })
     });
     assert!(res.is_ok());
-    assert_eq!(res.unwrap().state().count, 1);
+    assert_eq!(res.unwrap(), 1);
   }
 
   #[test]
   fn test_unmet_pre_condition() {
-    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: -1 } };
-    let res = strain.clone().evolve(&Increment);
+    let strain = -1;
+    let res = strain.evolve(&Increment);
     assert!(res.is_err());
-    assert_eq!(strain.state().count, -1);
+    assert_eq!(strain, -1);
   }
 
   #[test]
   fn test_branch() {
-    let strain : strain::Strain<Counter> = strain::Strain { state: ~Counter { count: 0 } };
+    let strain = 0;
     let res = strain.evolve(&Increment);
     assert!(res.is_ok());
     let branch_point = res.unwrap();
@@ -92,7 +91,7 @@ mod tests {
     let end_state_2 = branch.evolve(&Decrement);
     assert!(end_state_1.is_ok());
     assert!(end_state_2.is_ok());
-    assert_eq!(end_state_1.unwrap().state().count, 2);
-    assert_eq!(end_state_2.unwrap().state().count, 0);
+    assert_eq!(end_state_1.unwrap(), 2);
+    assert_eq!(end_state_2.unwrap(), 0);
   }
 }

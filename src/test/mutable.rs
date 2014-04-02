@@ -3,7 +3,8 @@ mod tests {
   use strain::mutable::Event;
   use strain::mutable::Strain;
   use strain::branchable::Branchable;
-  use strain::state::{State,Mutable};
+  use strain::state::{State};
+  use strain::strain::{Mutable};
   use strain::strain;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
@@ -19,8 +20,8 @@ mod tests {
   }
 
   impl strain::Strain<Value> for Counter {
-    fn new(state: Value) -> ~Counter {
-      ~Counter { count: state }
+    fn new(state: Value) -> Counter {
+      Counter { count: state }
     }
   }
 

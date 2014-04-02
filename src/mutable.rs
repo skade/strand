@@ -1,5 +1,6 @@
 use errors::Errors;
-use state::{State,Mutable};
+use state::{State};
+use strain::Mutable;
 use strain;
 
 pub trait Event<T: State> {
