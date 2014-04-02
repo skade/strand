@@ -5,8 +5,6 @@ mod tests {
   use strain::branchable::Branchable;
   use strain::state::{State,Mutable};
   use strain::strain;
-  use strain::strain::*;
-  use strain::mutable::*;
   use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   #[deriving(Clone)]
