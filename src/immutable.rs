@@ -1,7 +1,6 @@
 use errors::Errors;
 use state::{State,Immutable};
 use strain;
-use branchable::Branchable;
 
 pub trait Event<T: State> {
   fn precondition(&self, state: &T) -> Result<(), Errors>;

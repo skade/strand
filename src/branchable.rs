@@ -1,4 +1,3 @@
-use state::State;
 use strain::Strain;
 
 pub trait Branchable {
