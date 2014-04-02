@@ -3,10 +3,10 @@ use state::State;
 pub trait Strain<T: State> {
   fn new(state: T) -> Self;
 }
-pub trait Mutable<T: State> {
+pub trait Mutable<T: State> : Strain<T> {
   fn state<'a>(&'a mut self) -> &'a mut T;
 }
-pub trait Immutable<T: State> {
+pub trait Immutable<T: State> : Strain<T> {
   fn state(&self) -> T;
 }
 

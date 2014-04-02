@@ -14,9 +14,14 @@ mod tests {
   }
   impl State for Value {}
 
-  #[deriving(Clone)]
   struct Counter {
     count: Value
+  }
+
+  impl Branchable for Counter {
+    fn branch(self) -> Counter {
+      Counter { count: self.count.clone() }
+    }
   }
 
   impl strain::Strain<Value> for Counter {
