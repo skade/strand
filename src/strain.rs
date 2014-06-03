@@ -10,8 +10,8 @@ pub trait Immutable<T: State> : Strain<T> {
   fn state(&self) -> T;
 }
 
-impl Strain<~int> for ~int {
-  fn new(state: ~int) -> ~int {
+impl Strain<Box<int>> for Box<int> {
+  fn new(state: Box<int>) -> Box<int> {
     state
   }
 }

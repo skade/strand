@@ -42,7 +42,7 @@ mod tests {
   impl Event<Value> for Increment {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PreConditionNotMet(~"I cannot count to negatives"))
+        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -55,7 +55,7 @@ mod tests {
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
+        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -65,7 +65,7 @@ mod tests {
   impl Event<Value> for Decrement {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 1 {
-        Err(PreConditionNotMet(~"I cannot count to negatives"))
+        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -78,7 +78,7 @@ mod tests {
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PostConditionNotMet(~"I shouldn't have counted to negatives"))
+        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }
