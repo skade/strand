@@ -1,4 +1,4 @@
 strain
 ======
 
-Strain is a replicating database tracking events.
+Strain is a datatype that can be evolved.
