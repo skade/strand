@@ -1,4 +1,4 @@
-strain
+Strand
 ======
 
-Strain is a datatype that can be evolved.
+Strand is a datatype that can be evolved.

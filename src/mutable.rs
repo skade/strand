@@ -1,7 +1,7 @@
 use errors::Errors;
 use state::{State};
-use strain::Mutable;
-use strain;
+use strand::Mutable;
+use strand;
 
 pub trait Event<T: State> {
   fn precondition(&self, state: &T) -> Result<(), Errors>;
@@ -11,11 +11,11 @@ pub trait Event<T: State> {
   fn action(&self, state: &mut T) -> Result<(), Errors>;
 }
 
-pub trait Strain<T> {
+pub trait Strand<T> {
   fn evolve(&mut self, event: &Event<T>) -> Result<(), Errors>;
 }
 
-impl<T: State, A: strain::Strain<T> + Mutable<T>> Strain<T> for A {
+impl<T: State, A: strand::Strand<T> + Mutable<T>> Strand<T> for A {
   fn evolve(&mut self, event: &Event<T>) -> Result<(), Errors>{
     event.precondition(self.state()).and_then(|_| {
       event.action(self.state()).and_then(|_| {

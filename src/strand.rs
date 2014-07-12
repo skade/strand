@@ -1,22 +1,22 @@
 use state::State;
 
-pub trait Strain<T: State> {
+pub trait Strand<T: State> {
   fn new(state: T) -> Self;
 }
-pub trait Mutable<T: State> : Strain<T> {
+pub trait Mutable<T: State> : Strand<T> {
   fn state<'a>(&'a mut self) -> &'a mut T;
 }
-pub trait Immutable<T: State> : Strain<T> {
+pub trait Immutable<T: State> : Strand<T> {
   fn state(&self) -> T;
 }
 
-impl Strain<Box<int>> for Box<int> {
+impl Strand<Box<int>> for Box<int> {
   fn new(state: Box<int>) -> Box<int> {
     state
   }
 }
 
-impl Strain<int> for int {
+impl Strand<int> for int {
   fn new(state: int) -> int {
     state
   }

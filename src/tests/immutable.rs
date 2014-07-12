@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
-  use strain::state::State;
-  use strain::immutable::Event;
-  use strain::immutable::Strain;
-  use strain::branchable::Branchable;
-  use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
+  use strand::state::State;
+  use strand::immutable::Event;
+  use strand::immutable::Strand;
+  use strand::branchable::Branchable;
+  use strand::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   #[deriving(Clone)]
   struct Counter {

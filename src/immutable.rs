@@ -1,7 +1,7 @@
 use errors::Errors;
 use state::{State};
-use strain::Immutable;
-use strain;
+use strand::Immutable;
+use strand;
 
 pub trait Event<T: State> {
   fn precondition(&self, state: T) -> Result<(), Errors>;
@@ -11,17 +11,17 @@ pub trait Event<T: State> {
   fn action(&self, state: T) -> Result<T, Errors>;
 }
 
-pub trait Strain<T: State, A: strain::Strain<T> + Immutable<T>> {
+pub trait Strand<T: State, A: strand::Strand<T> + Immutable<T>> {
   fn evolve(self, event: &Event<T>) -> Result<A, Errors>;
 }
 
-impl<T: State, A: strain::Strain<T> + Immutable<T>> Strain<T, A> for A {
+impl<T: State, A: strand::Strand<T> + Immutable<T>> Strand<T, A> for A {
   fn evolve(self, event: &Event<T>) -> Result<A, Errors>{
     event.precondition(self.state()).and_then(|_| {
       event.action(self.state()).and_then(|state| {
         match event.postcondition(self.state()) {
           Ok(_) => {
-            let new_strain: A = strain::Strain::new(state);
+            let new_strain: A = strand::Strand::new(state);
             Ok( new_strain )
           },
           Err(errval) => { Err(errval) }

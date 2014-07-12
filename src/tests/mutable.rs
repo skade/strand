@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
-  use strain::mutable::Event;
-  use strain::mutable::Strain;
-  use strain::branchable::Branchable;
-  use strain::state::{State};
-  use strain::strain::{Mutable};
-  use strain::strain;
-  use strain::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
+  use strand::mutable::Event;
+  use strand::mutable::Strand;
+  use strand::branchable::Branchable;
+  use strand::state::{State};
+  use strand::strand::{Mutable};
+  use strand::strand;
+  use strand::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
 
   #[deriving(Clone)]
   struct Value {
@@ -24,7 +24,7 @@ mod tests {
     }
   }
 
-  impl strain::Strain<Value> for Counter {
+  impl strand::Strand<Value> for Counter {
     fn new(state: Value) -> Counter {
       Counter { count: state }
     }
