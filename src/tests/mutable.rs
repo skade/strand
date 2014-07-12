@@ -3,7 +3,6 @@ mod tests {
   use strand::mutable::Event;
   use strand::mutable::Strand;
   use strand::branchable::Branchable;
-  use strand::state::{State};
   use strand::strand::{Mutable};
   use strand::strand;
   use strand::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
@@ -12,7 +11,6 @@ mod tests {
   struct Value {
     x: int
   }
-  impl State for Value {}
 
   struct Counter {
     count: Value

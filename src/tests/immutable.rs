@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-  use strand::state::State;
   use strand::immutable::Event;
   use strand::immutable::Strand;
   use strand::branchable::Branchable;
@@ -10,7 +9,6 @@ mod tests {
   struct Counter {
     count: int,
   }
-  impl State for Counter {}
 
   struct Increment;
   struct Decrement;

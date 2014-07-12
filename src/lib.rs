@@ -1,6 +1,5 @@
 #![crate_type = "lib"]
 
-pub mod state;
 pub mod mutable;
 pub mod immutable;
 pub mod errors;

@@ -1,9 +1,8 @@
 use errors::Errors;
-use state::{State};
 use strand::Immutable;
 use strand;
 
-pub trait Event<T: State> {
+pub trait Event<T> {
   fn precondition(&self, state: T) -> Result<(), Errors>;
 
   fn postcondition(&self, state: T) -> Result<(), Errors>;
@@ -11,11 +10,11 @@ pub trait Event<T: State> {
   fn action(&self, state: T) -> Result<T, Errors>;
 }
 
-pub trait Strand<T: State, A: strand::Strand<T> + Immutable<T>> {
+pub trait Strand<T, A: strand::Strand<T> + Immutable<T>> {
   fn evolve(self, event: &Event<T>) -> Result<A, Errors>;
 }
 
-impl<T: State, A: strand::Strand<T> + Immutable<T>> Strand<T, A> for A {
+impl<T, A: strand::Strand<T> + Immutable<T>> Strand<T, A> for A {
   fn evolve(self, event: &Event<T>) -> Result<A, Errors>{
     event.precondition(self.state()).and_then(|_| {
       event.action(self.state()).and_then(|state| {
