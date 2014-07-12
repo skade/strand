@@ -62,7 +62,7 @@ mod tests {
 
   #[test]
   fn test_state_changes() {
-    let strain = 0;
+    let strain = 0i;
     let res = strain.evolve(&Increment).and_then(|state| {
       state.evolve(&Increment).and_then(|state2| {
         state2.evolve(&Decrement)
@@ -74,15 +74,15 @@ mod tests {
 
   #[test]
   fn test_unmet_pre_condition() {
-    let strain = -1;
+    let strain = -1i;
     let res = strain.evolve(&Increment);
     assert!(res.is_err());
-    assert_eq!(strain, -1);
+    assert_eq!(strain, -1i);
   }
 
   #[test]
   fn test_branch() {
-    let strain = 0;
+    let strain = 0i;
     let res = strain.evolve(&Increment);
     assert!(res.is_ok());
     let branch_point = res.unwrap();
@@ -91,7 +91,7 @@ mod tests {
     let end_state_2 = branch.evolve(&Decrement);
     assert!(end_state_1.is_ok());
     assert!(end_state_2.is_ok());
-    assert_eq!(end_state_1.unwrap(), 2);
-    assert_eq!(end_state_2.unwrap(), 0);
+    assert_eq!(end_state_1.unwrap(), 2i);
+    assert_eq!(end_state_2.unwrap(), 0i);
   }
 }

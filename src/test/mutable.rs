@@ -32,7 +32,7 @@ mod tests {
 
   impl Mutable<Value> for Counter {
     fn state<'a>(&'a mut self) -> &'a mut Value {
-      &'a mut self.count
+      &mut self.count
     }
   }
 
