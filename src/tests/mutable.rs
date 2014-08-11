@@ -37,7 +37,7 @@ mod tests {
   struct Increment;
   struct Decrement;
 
-  impl Event<Value> for Increment {
+  impl Event<Value,int> for Increment {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
         Err(PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -46,9 +46,9 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
+    fn action(&self, count: &mut Value) -> Result<int, Errors>  {
       count.x = count.x + 1;
-      Ok(())
+      Ok(count.x)
     }
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
@@ -60,7 +60,7 @@ mod tests {
     }
   }
 
-  impl Event<Value> for Decrement {
+  impl Event<Value, int> for Decrement {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 1 {
         Err(PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -69,9 +69,9 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
+    fn action(&self, count: &mut Value) -> Result<int, Errors>  {
       count.x = count.x - 1;
-      Ok(())
+      Ok(count.x)
     }
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
