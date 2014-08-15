@@ -20,8 +20,8 @@ impl<T, A: strand::Strand<T> + Immutable<T>> Strand<T, A> for A {
       event.action(self.state()).and_then(|state| {
         match event.postcondition(self.state()) {
           Ok(_) => {
-            let new_strain: A = strand::Strand::new(state);
-            Ok( new_strain )
+            let new_strand: A = strand::Strand::new(state);
+            Ok( new_strand )
           },
           Err(errval) => { Err(errval) }
         }

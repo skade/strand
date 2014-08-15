@@ -86,36 +86,36 @@ mod tests {
 
   #[test]
   fn test_state_changes() {
-    let mut strain: Counter = Counter { count: Value { x: 0 } };
-    let res = strain.evolve(&Increment).and_then(|_| {
-      strain.evolve(&Increment).and_then(|_| {
-        strain.evolve(&Decrement)
+    let mut strand: Counter = Counter { count: Value { x: 0 } };
+    let res = strand.evolve(&Increment).and_then(|_| {
+      strand.evolve(&Increment).and_then(|_| {
+        strand.evolve(&Decrement)
       })
     });
 
     assert!(res.is_ok());
-    assert_eq!(strain.count.x, 1);
+    assert_eq!(strand.count.x, 1);
   }
 
   #[test]
   fn test_unmet_pre_condition() {
-    let mut strain: Counter = Counter { count: Value { x: -1 } };
-    let res = strain.evolve(&Increment);
+    let mut strand: Counter = Counter { count: Value { x: -1 } };
+    let res = strand.evolve(&Increment);
     assert!(res.is_err());
-    assert_eq!(strain.count.x, -1);
+    assert_eq!(strand.count.x, -1);
   }
 
   #[test]
   fn test_branch() {
-    let mut strain: Counter = Counter { count: Value { x: 0 } };
-    let res = strain.evolve(&Increment);
+    let mut strand: Counter = Counter { count: Value { x: 0 } };
+    let res = strand.evolve(&Increment);
     assert!(res.is_ok());
-    let mut branch = strain.branch();
-    let res1 = strain.evolve(&Increment);
+    let mut branch = strand.branch();
+    let res1 = strand.evolve(&Increment);
     let res2 = branch.evolve(&Decrement);
     assert!(res1.is_ok());
     assert!(res2.is_ok());
-    assert_eq!(strain.count.x, 2);
+    assert_eq!(strand.count.x, 2);
     assert_eq!(branch.count.x, 0);
   }
 }

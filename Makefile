@@ -5,11 +5,11 @@ RUSTFLAGS ?= -O --out-dir build -L build -L leveldb/build -L leveldb/leveldb -C 
 
 VERSION=0.1-pre
 
-strain: leveldb/build/leveldb*.rlib
+strand: leveldb/build/leveldb*.rlib
 	mkdir -p build/
 	$(RUSTC) $(RUSTFLAGS) src/lib.rs
 
-test: strain
+test: strand
 	mkdir -p build/
 	$(RUSTC) $(RUSTFLAGS) --test src/test/test.rs
 	rm -rf testdbs
