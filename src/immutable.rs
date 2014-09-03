@@ -14,12 +14,8 @@ pub trait Strand<T, A: strand::Strand<T> + Immutable<T>> {
   fn evolve(self, event: &Event<T>) -> Result<A, Errors>;
 }
 
-pub trait AsEvent<T> {
-  fn as_event(self) -> Box<Event<T>>;
-}
-
-pub trait AsSendableEvent<T,S> {
-  fn as_sendable_event(self) -> Box<Event<T>+Send>;
+pub trait AsEvent<T,S> {
+  fn as_event(self) -> Box<Event<T>+Send>;
 }
 
 impl<T, A: strand::Strand<T> + Immutable<T>> Strand<T, A> for A {
