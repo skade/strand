@@ -1,3 +1,5 @@
+extern crate strand;
+
 #[cfg(test)]
 mod tests {
   use strand::immutable::Event;
