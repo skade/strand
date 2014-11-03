@@ -1,0 +1,8 @@
+language: rust
+env:
+  global:
+    - secure: AxOWVIrwyqVZclNhljLLcMKuiTBDeG40xuzHFgOOCdfQBWyI+LjuOb0rje9L942j46+p1rw/9DzhDks3wwtQizuARZGTIRFAbkxboSSsW16b+Vip1LMmWFL0eXeSJ3ZmPCOQr8E6jPiqCE5m0SvFrkFNb8d3X1PVvuiMKDGCivY=
+after_script:
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+rust:
+  - nightly
