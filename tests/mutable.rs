@@ -7,13 +7,14 @@ mod tests {
   use strand::branchable::Branchable;
   use strand::strand::{Mutable};
   use strand::strand;
-  use strand::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
+  use strand::errors::{Errors};
 
-  #[deriving(Clone)]
+  #[deriving(Clone,Copy)]
   struct Value {
     x: int
   }
 
+  #[deriving(Copy)]
   struct Counter {
     count: Value
   }
@@ -42,7 +43,7 @@ mod tests {
   impl Event<Value,int> for Increment {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
+        Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -55,7 +56,7 @@ mod tests {
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
+        Err(Errors::PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -65,7 +66,7 @@ mod tests {
   impl Event<Value, int> for Decrement {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 1 {
-        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
+        Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -78,7 +79,7 @@ mod tests {
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
-        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
+        Err(Errors::PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }

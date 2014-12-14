@@ -5,7 +5,7 @@ mod tests {
   use strand::immutable::Event;
   use strand::immutable::Strand;
   use strand::branchable::Branchable;
-  use strand::errors::{Errors, PreConditionNotMet, PostConditionNotMet};
+  use strand::errors::{Errors};
 
   #[deriving(Clone)]
   struct Counter {
@@ -18,7 +18,7 @@ mod tests {
   impl Event<int> for Increment {
     fn precondition(&self, state: int) -> Result<(), Errors> {
       if state < 0 {
-        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
+        Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -30,7 +30,7 @@ mod tests {
 
     fn postcondition(&self, state: int) -> Result<(), Errors> {
       if state < 0 {
-        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
+        Err(Errors::PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -40,7 +40,7 @@ mod tests {
   impl Event<int> for Decrement {
     fn precondition(&self, state: int) -> Result<(), Errors> {
       if state < 1 {
-        Err(PreConditionNotMet("I cannot count to negatives".to_string()))
+        Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
       } else {
         Ok(())
       }
@@ -52,7 +52,7 @@ mod tests {
 
     fn postcondition(&self, state: int) -> Result<(), Errors> {
       if state < 0 {
-        Err(PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
+        Err(Errors::PostConditionNotMet("I shouldn't have counted to negatives".to_string()))
       } else {
         Ok(())
       }
