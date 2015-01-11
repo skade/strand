@@ -1,3 +1,4 @@
+#![allow(unstable)]
 extern crate strand;
 
 #[cfg(test)]
@@ -9,12 +10,12 @@ mod tests {
   use strand::strand;
   use strand::errors::{Errors};
 
-  #[deriving(Clone,Copy)]
+  #[derive(Copy,Clone)]
   struct Value {
-    x: int
+    x: i32
   }
 
-  #[deriving(Copy)]
+  #[derive(Copy,Clone)]
   struct Counter {
     count: Value
   }
@@ -40,7 +41,7 @@ mod tests {
   struct Increment;
   struct Decrement;
 
-  impl Event<Value,int> for Increment {
+  impl Event<Value,i32> for Increment {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -49,7 +50,7 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<int, Errors>  {
+    fn action(&self, count: &mut Value) -> Result<i32, Errors>  {
       count.x = count.x + 1;
       Ok(count.x)
     }
@@ -63,7 +64,7 @@ mod tests {
     }
   }
 
-  impl Event<Value, int> for Decrement {
+  impl Event<Value, i32> for Decrement {
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 1 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -72,7 +73,7 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<int, Errors>  {
+    fn action(&self, count: &mut Value) -> Result<i32, Errors>  {
       count.x = count.x - 1;
       Ok(count.x)
     }

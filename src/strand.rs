@@ -7,27 +7,3 @@ pub trait Mutable<T> : Strand<T> {
 pub trait Immutable<T> : Strand<T> {
   fn state(&self) -> T;
 }
-
-impl Strand<Box<int>> for Box<int> {
-  fn new(state: Box<int>) -> Box<int> {
-    state
-  }
-}
-
-impl Strand<int> for int {
-  fn new(state: int) -> int {
-    state
-  }
-}
-
-impl Immutable<int> for int {
-  fn state(&self) -> int {
-    self.clone()
-  }
-}
-
-//impl<T: Clone> Immutable<T> for T {
-//  fn state(&self) -> ~T {
-//    ~self.clone()
-//  }
-//}
