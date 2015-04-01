@@ -1,5 +1,4 @@
-
-#[derive(Show)]
+#[derive(Debug)]
 pub enum Errors {
   PreConditionNotMet(String),
   PostConditionNotMet(String),

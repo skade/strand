@@ -1,4 +1,3 @@
-#![allow(unstable)]
 extern crate strand;
 
 #[cfg(test)]
@@ -41,7 +40,9 @@ mod tests {
   struct Increment;
   struct Decrement;
 
-  impl Event<Value,i32> for Increment {
+  impl Event for Increment {
+    type T = Value;
+
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 0 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -50,9 +51,9 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<i32, Errors>  {
+    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
       count.x = count.x + 1;
-      Ok(count.x)
+      Ok(())
     }
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {
@@ -64,7 +65,9 @@ mod tests {
     }
   }
 
-  impl Event<Value, i32> for Decrement {
+  impl Event for Decrement {
+    type T = Value;
+
     fn precondition(&self, count: &Value) -> Result<(), Errors> {
       if count.x < 1 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -73,9 +76,9 @@ mod tests {
       }
     }
 
-    fn action(&self, count: &mut Value) -> Result<i32, Errors>  {
+    fn action(&self, count: &mut Value) -> Result<(), Errors>  {
       count.x = count.x - 1;
-      Ok(count.x)
+      Ok(())
     }
 
     fn postcondition(&self, count: &Value) -> Result<(), Errors> {

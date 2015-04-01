@@ -1,4 +1,3 @@
-#![allow(unstable)]
 extern crate strand;
 
 #[cfg(test)]
@@ -35,7 +34,9 @@ mod tests {
   struct Increment;
   struct Decrement;
 
-  impl Event<Counter> for Increment {
+  impl Event for Increment {
+    type T = Counter;
+
     fn precondition(&self, state: Counter) -> Result<(), Errors> {
       if state.state < 0 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
@@ -57,7 +58,9 @@ mod tests {
     }
   }
 
-  impl Event<Counter> for Decrement {
+  impl Event for Decrement {
+    type T = Counter;
+
     fn precondition(&self, state: Counter) -> Result<(), Errors> {
       if state.state < 1 {
         Err(Errors::PreConditionNotMet("I cannot count to negatives".to_string()))
